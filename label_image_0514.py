@@ -61,10 +61,10 @@ def load_labels(label_file):
 if __name__ == "__main__":
 
     # PATH_TO_TEST_IMAGES_DIR = 'F:\\tmp\\test_picture'
-    PATH_TO_TEST_IMAGES_DIR = r'/home/yqw/YiTuClassify0409/Picture/training20180428/toner_strip'
-    class_name = os.path.split(PATH_TO_TEST_IMAGES_DIR)[-1]
-    IMAGES = os.listdir(PATH_TO_TEST_IMAGES_DIR)
-    if len(IMAGES) == 0:
+    PATH_TO_TEST_IMAGES_DIR = r'/home/yqw/YiTuClassify0409/Picture/training20180501'
+    class_names = os.listdir(PATH_TO_TEST_IMAGES_DIR)
+    # IMAGES = os.listdir(PATH_TO_TEST_IMAGES_DIR)
+    if len(class_names) == 0:
         tf.logging.warning('No files found')
     model_file = \
         r'/home/yqw/YiTuClassify0409/训练结果集合/0514-92.8%-4500-training20180508/output_graph.pb'
@@ -93,43 +93,70 @@ if __name__ == "__main__":
 
         # TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, image)]
         # for image_path in TEST_IMAGE_PATHS:
-        for image in IMAGES:
-            # image = os.path.basename(image_path)
-            image_path = os.path.join(PATH_TO_TEST_IMAGES_DIR,image)
-            t = read_tensor_from_image_file(
-                image_path,
-                input_height=input_height,
-                input_width=input_width,
-                input_mean=input_mean,
-                input_std=input_std)
 
-            results = sess.run(output_operation.outputs[0], {
-                input_operation.outputs[0]: t
-            })
+        for class_name in class_names:
+            class_name_path = os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name)
+            images = os.listdir(class_name_path)
+            for image in images:
 
-            results = np.squeeze(results)
-            top_k = results.argsort()[-1:][::-1]
-            labels = load_labels(label_file)
-            list_map = []
-            for i in top_k:
-                if labels[i] == class_name:
-                    if os.path.exists(os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name)):
-                        shutil.copy(image_path, os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name))
+                image_path = os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name,image)
+                t = read_tensor_from_image_file(
+                    image_path,
+                    input_height=input_height,
+                    input_width=input_width,
+                    input_mean=input_mean,
+                    input_std=input_std)
+
+                results = sess.run(output_operation.outputs[0], {
+                    input_operation.outputs[0]: t
+                })
+
+                results = np.squeeze(results)
+                top_k = results.argsort()[-1:][::-1]
+                labels = load_labels(label_file)
+                list_map = []
+                for i in top_k:
+                    if labels[i] == class_name:
+                        if os.path.exists(os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name,class_name)):
+                            shutil.copy(image_path, os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name,class_name))
+                        else:
+                            os.makedirs(os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name,class_name))
+                            # TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, image)]
+                            shutil.copy(image_path, os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name,class_name))
                     else:
-                        os.makedirs(os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name))
-                        # TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, image)]
-                        shutil.copy(image_path, os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name))
-                else:
-                    if os.path.exists(os.path.join(PATH_TO_TEST_IMAGES_DIR, labels[i])):
-                        shutil.copy(image_path, os.path.join(PATH_TO_TEST_IMAGES_DIR, labels[i]))
-                    else:
-                        os.makedirs(os.path.join(PATH_TO_TEST_IMAGES_DIR, labels[i]))
-                        # TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, image)]
-                        shutil.copy(image_path, os.path.join(PATH_TO_TEST_IMAGES_DIR, labels[i]))
+                        if os.path.exists(os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name,labels[i])):
+                            shutil.copy(image_path, os.path.join(PATH_TO_TEST_IMAGES_DIR,class_name, labels[i]))
+                        else:
+                            os.makedirs(os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name,labels[i]))
+                            # TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, image)]
+                            shutil.copy(image_path, os.path.join(PATH_TO_TEST_IMAGES_DIR, class_name,labels[i]))
 
-                list_map.append(image)
-                list_map.append(labels[i])
-                list_map.append(results[i])
-            list.append(list_map)
+                    list_map.append(image)
+                    list_map.append(labels[i])
+                    list_map.append(results[i])
+                    list.append(list_map)
     df = pd.DataFrame(list)
     df.to_csv('output_csv.csv', index=False, header=False)
+
+
+def statics(path):
+
+    class_names = os.listdir(path)
+
+    for class_name in class_names:
+        images = os.listdir(os.path.join(path,class_name))
+        for image in images:
+            if os.path.isdir(image):
+                dir_statics(os.path.join(path,class_name,image))
+
+def dir_statics(dir_path):
+    num_files=0
+
+    for fn in os.listdir(dir_path):
+        num_files +=1
+
+    return num_files
+
+
+
+
