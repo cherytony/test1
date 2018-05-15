@@ -57,11 +57,44 @@ def load_labels(label_file):
         label.append(l.rstrip())
     return label
 
+def statics(PATH_TO_TEST_IMAGES_DIR):
+
+    result = {}
+
+    class_names = os.listdir(PATH_TO_TEST_IMAGES_DIR)
+
+    for class_name in class_names:
+        # print("class_name:",class_name)
+        images = os.listdir(os.path.join(PATH_TO_TEST_IMAGES_DIR,class_name))
+        # print("images:",images)
+        result[class_name] = {}
+        for image in images:
+            num =0
+            # print("image: ",image)
+            if os.path.isdir(os.path.join(PATH_TO_TEST_IMAGES_DIR,class_name,image)):
+                num = dir_statics(os.path.join(PATH_TO_TEST_IMAGES_DIR,class_name,image))
+                # print("num: ",num)
+
+                result[class_name][image]=num
+
+
+    print(result)
+
+# 统计文件夹下文件的个数
+def dir_statics(dir_path):
+    num_files=0
+
+    for fn in os.listdir(dir_path):
+        num_files +=1
+
+    return num_files
+
+
 
 if __name__ == "__main__":
 
     # PATH_TO_TEST_IMAGES_DIR = 'F:\\tmp\\test_picture'
-    PATH_TO_TEST_IMAGES_DIR = r'/home/yqw/YiTuClassify0409/Picture/training20180501'
+    PATH_TO_TEST_IMAGES_DIR = r'/home/yqw/YiTuClassify0409/Picture/training20180428'
     class_names = os.listdir(PATH_TO_TEST_IMAGES_DIR)
     # IMAGES = os.listdir(PATH_TO_TEST_IMAGES_DIR)
     if len(class_names) == 0:
@@ -137,25 +170,9 @@ if __name__ == "__main__":
                     list.append(list_map)
     df = pd.DataFrame(list)
     df.to_csv('output_csv.csv', index=False, header=False)
+    statics(PATH_TO_TEST_IMAGES_DIR)
 
 
-def statics(path):
-
-    class_names = os.listdir(path)
-
-    for class_name in class_names:
-        images = os.listdir(os.path.join(path,class_name))
-        for image in images:
-            if os.path.isdir(image):
-                dir_statics(os.path.join(path,class_name,image))
-
-def dir_statics(dir_path):
-    num_files=0
-
-    for fn in os.listdir(dir_path):
-        num_files +=1
-
-    return num_files
 
 
 

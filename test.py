@@ -1,5 +1,6 @@
 import os
 import shutil
+import csv
 
 from skimage import io
 # path = "F:\\Project\\Project\\YiTuClassify\\Picture\\Picture"
@@ -73,6 +74,8 @@ def statics(path):
         print("class_name:",class_name)
         images = os.listdir(os.path.join(path,class_name))
         print("images:",images)
+
+        # 多层字典在子层需要定义
         result[class_name] = {}
         for image in images:
             num =0
@@ -80,12 +83,14 @@ def statics(path):
             if os.path.isdir(os.path.join(path,class_name,image)):
                 num = dir_statics(os.path.join(path,class_name,image))
                 print("num: ",num)
-
+                # 直接赋值
                 result[class_name][image]=num
 
 
     print(result)
 
+
+# 统计文件夹下文件个数
 def dir_statics(dir_path):
     num_files=0
 
@@ -94,8 +99,39 @@ def dir_statics(dir_path):
 
     return num_files
 
+
+my_list = [{'players.vis_name': 'Khazri', 'players.role': 'Midfielder', 'players.country': 'Tunisia',
+            'players.last_name': 'Khazri', 'players.player_id': '989', 'players.first_name': 'Wahbi',
+            'players.date_of_birth': '08/02/1991', 'players.team': 'Bordeaux'},
+           {'players.vis_name': 'Khazri', 'players.role': 'Midfielder', 'players.country': 'Tunisia',
+            'players.last_name': 'Khazri', 'players.player_id': '989', 'players.first_name': 'Wahbi',
+            'players.date_of_birth': '08/02/1991', 'players.team': 'Sunderland'},
+           {'players.vis_name': 'Lewis Baker', 'players.role': 'Midfielder', 'players.country': 'England',
+            'players.last_name': 'Baker', 'players.player_id': '9574', 'players.first_name': 'Lewis',
+            'players.date_of_birth': '25/04/1995', 'players.team': 'Vitesse'}
+           ]
+
+out_file='text.csv'
+
+def nestedlist2csv(list, out_file):
+    with open(out_file, 'wb') as f:
+
+        headers = list[0].keys()
+        f_csv = csv.DictWriter(f,headers)
+        f_csv.writeheader()
+        f_csv.writerows(my_list)
+        # w = csv.writer(f)
+        # fieldnames=list[0].keys()
+        # print(fieldnames)
+        # # solve the problem to automatically write the header
+        # w.writerow(fieldnames)
+        # for row in list:
+        #     w.writerow(row.values())
+
 if __name__ =="__main__":
     statics(path)
+    #nestedlist2csv(my_list,out_file)
+
 
 
 
