@@ -54,7 +54,7 @@ def read_tensor_from_image_file(file_name,
 
 def load_labels(label_file):
     label = []
-    proto_as_ascii_lines = tf.gfile.GFile(label_file).readlines()
+    proto_as_ascii_lines = tf.gfile.GFile(label_file).readline
     for l in proto_as_ascii_lines:
         label.append(l.rstrip())
     return label
