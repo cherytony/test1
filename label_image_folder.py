@@ -22,7 +22,7 @@ def load_graph(model_file):
 def read_tensor_from_image_file(file_name,
                                 input_height=299,
                                 input_width=299,
-                                input_mean=0,
+                                input_mean=128,
                                 input_std=255):
     input_name = "file_reader"
     output_name = "normalized"
@@ -75,8 +75,8 @@ if __name__ == "__main__":
     label_file = r"/home/yqw/YiTuClassify0409/训练结果集合/0515-94.9%-4500-training20180508-save/output_labels.txt"
     input_height = 299
     input_width = 299
-    input_mean = 0
-    input_std = 255
+    input_mean = 128
+    input_std = 128
     input_layer = "Mul"
     output_layer = "final_result"
     input_name = "import/" + input_layer

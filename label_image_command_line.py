@@ -124,7 +124,7 @@ if __name__ == "__main__":
     # label_file = r"/home/yqw/YiTuClassify0409/训练结果集合/0514-92.8%-4500-training20180508/output_labels.txt"
     input_height = 299
     input_width = 299
-    input_mean = 0
+    input_mean = 128
     input_std = 255
     input_layer = "Mul"
     output_layer = "final_result"

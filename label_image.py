@@ -63,7 +63,7 @@ if __name__ == "__main__":
   label_file = "F:\\Project\\Project\\YiTuClassify\\tmp\\output_labels.txt"
   input_height = 299
   input_width = 299
-  input_mean = 0
+  input_mean = 128
   input_std = 255
   input_layer = "Mul"
   output_layer = "final_result"
