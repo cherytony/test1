@@ -2,6 +2,7 @@ import os
 import shutil
 import csv
 
+
 from skimage import io
 # path = "F:\\Project\\Project\\YiTuClassify\\Picture\\Picture"
 #
